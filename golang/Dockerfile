@@ -1,7 +1,7 @@
 ###
 ### this Dockerfile is an example representing one variant of this image; please see https://github.com/circleci-public/circleci-dockerfiles for a complete list of Dockerfiles for each tag/variant of this image
 ###
-FROM circleci/golang:1.9.4-stretch
+FROM circleci/golang:1.10.0
 
 # install java 8
 #
@@ -53,8 +53,10 @@ RUN FIREFOX_URL="https://s3.amazonaws.com/circle-downloads/firefox-mozilla-build
 #      && geckodriver --version
 
 # install chrome
+# Note: Revert back to https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+# after browser testing works in google-chrome-stable 65.0.x.y
 
-RUN curl --silent --show-error --location --fail --retry 3 --output /tmp/google-chrome-stable_current_amd64.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
+RUN curl --silent --show-error --location --fail --retry 3 --output /tmp/google-chrome-stable_current_amd64.deb https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_64.0.3282.186-1_amd64.deb \
       && (sudo dpkg -i /tmp/google-chrome-stable_current_amd64.deb || sudo apt-get -fy install)  \
       && rm -rf /tmp/google-chrome-stable_current_amd64.deb \
       && sudo sed -i 's|HERE/chrome"|HERE/chrome" --disable-setuid-sandbox --no-sandbox|g' \
