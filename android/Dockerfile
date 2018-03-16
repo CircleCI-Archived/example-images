@@ -174,7 +174,7 @@ RUN sdkmanager \
   "build-tools;27.0.2" \
   "build-tools;27.0.3"
 
-RUN sdkmanager "platforms;android-23"
+RUN sdkmanager "platforms;android-27"
 #
 # this Dockerfile is an example representing one variant of this image; please see https://github.com/circleci-public/circleci-dockerfiles for a complete list of Dockerfiles for each tag/variant of this image
 #
