@@ -1,7 +1,10 @@
 ###
 ### this Dockerfile is an example representing one variant of this image; please see https://github.com/circleci-public/circleci-dockerfiles for a complete list of Dockerfiles for each tag/variant of this image
 ###
-FROM circleci/php:5.6.34-apache-jessie
+#
+# this Dockerfile is an example representing one variant of this image; please see https://github.com/circleci-public/circleci-dockerfiles for a complete list of Dockerfiles for each tag/variant of this image
+#
+FROM circleci/php:7.1.15-apache-jessie-node
 
 # install java 8
 #

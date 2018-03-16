@@ -1,7 +1,10 @@
 ###
 ### this Dockerfile is an example representing one variant of this image; please see https://github.com/circleci-public/circleci-dockerfiles for a complete list of Dockerfiles for each tag/variant of this image
 ###
-FROM circleci/ruby:2.4.3-jessie
+#
+# this Dockerfile is an example representing one variant of this image; please see https://github.com/circleci-public/circleci-dockerfiles for a complete list of Dockerfiles for each tag/variant of this image
+#
+FROM circleci/ruby:2.3.6-stretch-node
 
 # install java 8
 #

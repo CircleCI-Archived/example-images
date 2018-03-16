@@ -1,7 +1,10 @@
 ###
 ### this Dockerfile is an example representing one variant of this image; please see https://github.com/circleci-public/circleci-dockerfiles for a complete list of Dockerfiles for each tag/variant of this image
 ###
-FROM circleci/rust:1.24.1-jessie
+#
+# this Dockerfile is an example representing one variant of this image; please see https://github.com/circleci-public/circleci-dockerfiles for a complete list of Dockerfiles for each tag/variant of this image
+#
+FROM circleci/rust:1.24.1-stretch-node
 
 # install java 8
 #
