@@ -1,83 +1,57 @@
 ###
 ### this Dockerfile is an example representing one variant of this image; please see https://github.com/circleci-public/circleci-dockerfiles for a complete list of Dockerfiles for each tag/variant of this image
 ###
-FROM buildpack-deps:buster-curl
+#
+# this Dockerfile is an example representing one variant of this image; please see https://github.com/circleci-public/circleci-dockerfiles for a complete list of Dockerfiles for each tag/variant of this image
+#
 
-# make Apt non-interactive
-RUN echo 'APT::Get::Assume-Yes "true";' > /etc/apt/apt.conf.d/90circleci \
-  && echo 'DPkg::Options "--force-confnew";' >> /etc/apt/apt.conf.d/90circleci
+FROM circleci/buildpack-deps:jessie-curl
 
-ENV DEBIAN_FRONTEND=noninteractive
+# docker installations command expect to run as root
+USER root
 
-# man directory is missing in some base images
-# https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=863199
 RUN apt-get update \
-  && mkdir -p /usr/share/man/man1 \
-  && apt-get install -y \
-    git mercurial xvfb \
-    locales sudo openssh-client ca-certificates tar gzip parallel \
-    net-tools netcat unzip zip bzip2 gnupg curl wget
+    && apt-get install -y \
+             iptables \
+	     btrfs-tools \
+	     xz-utils
 
+# set up subuid/subgid so that "--userns-remap=default" works out-of-the-box
+RUN set -x \
+    && addgroup --system dockremap \
+    && adduser --system --ingroup dockremap dockremap \
+    && echo 'dockremap:165536:65536' >> /etc/subuid \
+    && echo 'dockremap:165536:65536' >> /etc/subgid
 
-# Set timezone to UTC by default
-RUN ln -sf /usr/share/zoneinfo/Etc/UTC /etc/localtime
+ENV DIND_COMMIT 3b5fac462d21ca164b3778647420016315289034
 
-# Use unicode
-RUN locale-gen C.UTF-8 || true
-ENV LANG=C.UTF-8
+RUN wget -O /usr/local/bin/dind "https://raw.githubusercontent.com/docker/docker/${DIND_COMMIT}/hack/dind" \
+    && chmod +x /usr/local/bin/dind
 
-# install jq
-RUN JQ_URL="https://circle-downloads.s3.amazonaws.com/circleci-images/cache/linux-amd64/jq-latest" \
-  && curl --silent --show-error --location --fail --retry 3 --output /usr/bin/jq $JQ_URL \
-  && chmod +x /usr/bin/jq \
-  && jq --version
+RUN set -x \
+    && addgroup --system docker \
+    && sudo usermod --append --groups docker circleci
 
-# Install Docker
+# avoid creating separate files and embed file here
+RUN printf '#!/bin/sh \n\
+set -e \n\
+if [ "$#" -eq 0 -o "${1#-}" != "$1" ]; then \n\
+    set -- dockerd --host=unix:///var/run/docker.sock --host=tcp://0.0.0.0:2375 "$@" \n\
+fi \n\
+ \n\
+if [ "$1" = 'dockerd' ]; then \n\
+    set -- sudo sh "$(which dind)" "$@" \n\
+fi \n\
+ \n\
+exec "$@" \n\
+' > /usr/local/bin/dockerd-entrypoint.sh \
+   && chmod +x /usr/local/bin/dockerd-entrypoint.sh
 
-# Docker.com returns the URL of the latest binary when you hit a directory listing
-# We curl this URL and `grep` the version out.
-# The output looks like this:
+VOLUME /var/lib/docker
 
-#>    # To install, run the following commands as root:
-#>    curl -fsSLO https://download.docker.com/linux/static/stable/x86_64/docker-17.05.0-ce.tgz && tar --strip-components=1 -xvzf docker-17.05.0-ce.tgz -C /usr/local/bin
-#>
-#>    # Then start docker in daemon mode:
-#>    /usr/local/bin/dockerd
+ENTRYPOINT ["dockerd-entrypoint.sh"]
 
-RUN set -ex \
-  && export DOCKER_VERSION=$(curl --silent --fail --retry 3 https://download.docker.com/linux/static/stable/x86_64/ | grep -o -e 'docker-[.0-9]*-ce\.tgz' | sort -r | head -n 1) \
-  && DOCKER_URL="https://download.docker.com/linux/static/stable/x86_64/${DOCKER_VERSION}" \
-  && echo Docker URL: $DOCKER_URL \
-  && curl --silent --show-error --location --fail --retry 3 --output /tmp/docker.tgz "${DOCKER_URL}" \
-  && ls -lha /tmp/docker.tgz \
-  && tar -xz -C /tmp -f /tmp/docker.tgz \
-  && mv /tmp/docker/* /usr/bin \
-  && rm -rf /tmp/docker /tmp/docker.tgz \
-  && which docker \
-  && (docker version || true)
-
-# docker compose
-RUN COMPOSE_URL="https://circle-downloads.s3.amazonaws.com/circleci-images/cache/linux-amd64/docker-compose-latest" \
-  && curl --silent --show-error --location --fail --retry 3 --output /usr/bin/docker-compose $COMPOSE_URL \
-  && chmod +x /usr/bin/docker-compose \
-  && docker-compose version
-
-# install dockerize
-RUN DOCKERIZE_URL="https://circle-downloads.s3.amazonaws.com/circleci-images/cache/linux-amd64/dockerize-latest.tar.gz" \
-  && curl --silent --show-error --location --fail --retry 3 --output /tmp/dockerize-linux-amd64.tar.gz $DOCKERIZE_URL \
-  && tar -C /usr/local/bin -xzvf /tmp/dockerize-linux-amd64.tar.gz \
-  && rm -rf /tmp/dockerize-linux-amd64.tar.gz \
-  && dockerize --version
-
-RUN groupadd --gid 3434 circleci \
-  && useradd --uid 3434 --gid circleci --shell /bin/bash --create-home circleci \
-  && echo 'circleci ALL=NOPASSWD: ALL' >> /etc/sudoers.d/50-circleci \
-  && echo 'Defaults    env_keep += "DEBIAN_FRONTEND"' >> /etc/sudoers.d/env_keep
-
-# BEGIN IMAGE CUSTOMIZATIONS
-
-# END IMAGE CUSTOMIZATIONS
+LABEL com.circleci.user="circleci"
+LABEL com.circleci.preserve-entrypoint=true
 
 USER circleci
-
-CMD ["/bin/sh"]
