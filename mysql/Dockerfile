@@ -1,7 +1,7 @@
 ###
 ### this Dockerfile is an example representing one variant of this image; please see https://github.com/circleci-public/circleci-dockerfiles for a complete list of Dockerfiles for each tag/variant of this image
 ###
-FROM circleci/mysql:5.6.39
+FROM circleci/mysql:5.7.21
 
 RUN echo '\n\
 [mysqld]\n\

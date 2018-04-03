@@ -1,57 +1,85 @@
 ###
 ### this Dockerfile is an example representing one variant of this image; please see https://github.com/circleci-public/circleci-dockerfiles for a complete list of Dockerfiles for each tag/variant of this image
 ###
+FROM circleci/buildpack-deps:sid-curl
+
+# install java 8
 #
-# this Dockerfile is an example representing one variant of this image; please see https://github.com/circleci-public/circleci-dockerfiles for a complete list of Dockerfiles for each tag/variant of this image
+RUN if grep -q Debian /etc/os-release && grep -q jessie /etc/os-release; then \
+    echo "deb http://http.us.debian.org/debian/ jessie-backports main" | sudo tee -a /etc/apt/sources.list \
+    && echo "deb-src http://http.us.debian.org/debian/ jessie-backports main" | sudo tee -a /etc/apt/sources.list \
+    && sudo apt-get update; sudo apt-get install -y -t jessie-backports openjdk-8-jre openjdk-8-jre-headless openjdk-8-jdk openjdk-8-jdk-headless \
+  ; elif grep -q Ubuntu /etc/os-release && grep -q Trusty /etc/os-release; then \
+    echo "deb http://ppa.launchpad.net/openjdk-r/ppa/ubuntu trusty main" | sudo tee -a /etc/apt/sources.list \
+    && echo "deb-src http://ppa.launchpad.net/openjdk-r/ppa/ubuntu trusty main" | sudo tee -a /etc/apt/sources.list \
+    && sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key DA1A4A13543B466853BAF164EB9B1D8886F44E2A \
+    && sudo apt-get update; sudo apt-get install -y openjdk-8-jre openjdk-8-jre-headless openjdk-8-jdk openjdk-8-jdk-headless \
+  ; else \
+    sudo apt-get update; sudo apt-get install -y openjdk-8-jre openjdk-8-jre-headless openjdk-8-jdk openjdk-8-jdk-headless \
+  ; fi
+
+## install phantomjs
 #
+RUN PHANTOMJS_URL="https://circle-downloads.s3.amazonaws.com/circleci-images/cache/linux-amd64/phantomjs-latest.tar.bz2" \
+  && sudo apt-get install libfontconfig \
+  && curl --silent --show-error --location --fail --retry 3 --output /tmp/phantomjs.tar.bz2 ${PHANTOMJS_URL} \
+  && tar -x -C /tmp -f /tmp/phantomjs.tar.bz2 \
+  && sudo mv /tmp/phantomjs-*-linux-x86_64/bin/phantomjs /usr/local/bin \
+  && rm -rf /tmp/phantomjs.tar.bz2 /tmp/phantomjs-* \
+  && phantomjs --version
 
-FROM circleci/buildpack-deps:jessie-curl
+# install firefox
 
-# docker installations command expect to run as root
-USER root
+# If you are upgrading to any version newer than 47.0.1, you must check the compatibility with
+# selenium. See https://github.com/SeleniumHQ/selenium/issues/2559#issuecomment-237079591
 
-RUN apt-get update \
-    && apt-get install -y \
-             iptables \
-	     btrfs-tools \
-	     xz-utils
+RUN FIREFOX_URL="https://s3.amazonaws.com/circle-downloads/firefox-mozilla-build_47.0.1-0ubuntu1_amd64.deb" \
+  && curl --silent --show-error --location --fail --retry 3 --output /tmp/firefox.deb $FIREFOX_URL \
+  && echo 'ef016febe5ec4eaf7d455a34579834bcde7703cb0818c80044f4d148df8473bb  /tmp/firefox.deb' | sha256sum -c \
+  && sudo dpkg -i /tmp/firefox.deb || sudo apt-get -f install  \
+  && sudo apt-get install -y libgtk3.0-cil-dev libasound2 libasound2 libdbus-glib-1-2 libdbus-1-3 \
+  && rm -rf /tmp/firefox.deb \
+  && firefox --version
 
-# set up subuid/subgid so that "--userns-remap=default" works out-of-the-box
-RUN set -x \
-    && addgroup --system dockremap \
-    && adduser --system --ingroup dockremap dockremap \
-    && echo 'dockremap:165536:65536' >> /etc/subuid \
-    && echo 'dockremap:165536:65536' >> /etc/subgid
+# install geckodriver—disabling this temporarily, we will likely want this code in the future, but until we're ready to upgrade our version of firefox to 53+, geckodriver wont' be compatible...
 
-ENV DIND_COMMIT 3b5fac462d21ca164b3778647420016315289034
+# RUN export GECKODRIVER_LATEST_RELEASE_URL=$(curl https://api.github.com/repos/mozilla/geckodriver/releases/latest | jq -r ".assets[] | select(.name | test(\"linux64\")) | .browser_download_url") \
+#      && curl --silent --show-error --location --fail --retry 3 --output /tmp/geckodriver_linux64.tar.gz "$GECKODRIVER_LATEST_RELEASE_URL" \
+#      && cd /tmp \
+#      && tar xf geckodriver_linux64.tar.gz \
+#      && rm -rf geckodriver_linux64.tar.gz \
+#      && sudo mv geckodriver /usr/local/bin/geckodriver \
+#      && sudo chmod +x /usr/local/bin/geckodriver \
+#      && geckodriver --version
 
-RUN wget -O /usr/local/bin/dind "https://raw.githubusercontent.com/docker/docker/${DIND_COMMIT}/hack/dind" \
-    && chmod +x /usr/local/bin/dind
+# install chrome
+# Note: Revert back to https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+# after browser testing works in google-chrome-stable 65.0.x.y
 
-RUN set -x \
-    && addgroup --system docker \
-    && sudo usermod --append --groups docker circleci
+RUN curl --silent --show-error --location --fail --retry 3 --output /tmp/google-chrome-stable_current_amd64.deb https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_64.0.3282.186-1_amd64.deb \
+      && (sudo dpkg -i /tmp/google-chrome-stable_current_amd64.deb || sudo apt-get -fy install)  \
+      && rm -rf /tmp/google-chrome-stable_current_amd64.deb \
+      && sudo sed -i 's|HERE/chrome"|HERE/chrome" --disable-setuid-sandbox --no-sandbox|g' \
+           "/opt/google/chrome/google-chrome" \
+      && google-chrome --version
 
-# avoid creating separate files and embed file here
-RUN printf '#!/bin/sh \n\
-set -e \n\
-if [ "$#" -eq 0 -o "${1#-}" != "$1" ]; then \n\
-    set -- dockerd --host=unix:///var/run/docker.sock --host=tcp://0.0.0.0:2375 "$@" \n\
-fi \n\
- \n\
-if [ "$1" = 'dockerd' ]; then \n\
-    set -- sudo sh "$(which dind)" "$@" \n\
-fi \n\
- \n\
-exec "$@" \n\
-' > /usr/local/bin/dockerd-entrypoint.sh \
-   && chmod +x /usr/local/bin/dockerd-entrypoint.sh
+RUN export CHROMEDRIVER_RELEASE=$(curl --location --fail --retry 3 http://chromedriver.storage.googleapis.com/LATEST_RELEASE) \
+      && curl --silent --show-error --location --fail --retry 3 --output /tmp/chromedriver_linux64.zip "http://chromedriver.storage.googleapis.com/$CHROMEDRIVER_RELEASE/chromedriver_linux64.zip" \
+      && cd /tmp \
+      && unzip chromedriver_linux64.zip \
+      && rm -rf chromedriver_linux64.zip \
+      && sudo mv chromedriver /usr/local/bin/chromedriver \
+      && sudo chmod +x /usr/local/bin/chromedriver \
+      && chromedriver --version
 
-VOLUME /var/lib/docker
+# start xvfb automatically to avoid needing to express in circle.yml
+ENV DISPLAY :99
+RUN printf '#!/bin/sh\nXvfb :99 -screen 0 1280x1024x24 &\nexec "$@"\n' > /tmp/entrypoint \
+  && chmod +x /tmp/entrypoint \
+        && sudo mv /tmp/entrypoint /docker-entrypoint.sh
 
-ENTRYPOINT ["dockerd-entrypoint.sh"]
-
-LABEL com.circleci.user="circleci"
+# ensure that the build agent doesn't override the entrypoint
 LABEL com.circleci.preserve-entrypoint=true
 
-USER circleci
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["/bin/sh"]
