@@ -4,7 +4,7 @@ _Images from [hub.docker.com/r/circleci](https://hub.docker.com/r/circleci) are 
 
 ## Why
 
-Extends the official image of [PHP](https://dockerhub.com/_/php) for better use on CircleCI.
+Extends the official image of [PHP](https://hub.docker.com/_/php) for better use on CircleCI.
 
 We aim to have CircleCI-extended images ease adoption of Docker and CircleCI. Once users are successful, we encourage them to build and customize images to suit their individual projects' needs.
 
