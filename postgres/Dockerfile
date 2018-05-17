@@ -1,7 +1,7 @@
 ###
 ### this Dockerfile is an example representing one variant of this image; please see https://github.com/circleci-public/circleci-dockerfiles for a complete list of Dockerfiles for each tag/variant of this image
 ###
-FROM circleci/postgres:9.5.12-alpine
+FROM circleci/postgres:10.4-alpine
 
 ENV PGUSER $POSTGRES_USER
 ENV POSTGIS_VERSION 2.4.2
