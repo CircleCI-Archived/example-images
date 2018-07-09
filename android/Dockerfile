@@ -1,5 +1,7 @@
 #
-# this Dockerfile is an example representing one variant of this image; please see https://github.com/circleci-public/circleci-dockerfiles for a complete list of Dockerfiles for each tag/variant of this image
+# this Dockerfile is an example representing one variant of this image;
+### please see https://github.com/circleci-public/circleci-dockerfiles
+### for a complete list of Dockerfiles for each tag/variant of this image
 #
 FROM openjdk:8-jdk
 
@@ -175,4 +177,4 @@ RUN sdkmanager \
   "build-tools;27.0.3" \
   "build-tools;28.0.0"
 
-RUN sdkmanager "platforms;android-27"
+RUN sdkmanager "platforms;android-25"

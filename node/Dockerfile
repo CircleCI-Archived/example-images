@@ -1,7 +1,10 @@
 ###
-### this Dockerfile is an example representing one variant of this image; please see https://github.com/circleci-public/circleci-dockerfiles for a complete list of Dockerfiles for each tag/variant of this image
+### this Dockerfile is an example representing one variant of this image;
+### please see https://github.com/circleci-public/circleci-dockerfiles
+### for a complete list of Dockerfiles for each tag/variant of this image
 ###
-FROM node:10.4.0-jessie
+
+FROM node:10.6.0-jessie
 
 # make Apt non-interactive
 RUN echo 'APT::Get::Assume-Yes "true";' > /etc/apt/apt.conf.d/90circleci \
