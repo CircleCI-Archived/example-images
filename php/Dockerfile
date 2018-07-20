@@ -1,7 +1,10 @@
 ###
-### this Dockerfile is an example representing one variant of this image; please see https://github.com/circleci-public/circleci-dockerfiles for a complete list of Dockerfiles for each tag/variant of this image
+### this Dockerfile is an example representing one variant of this image;
+### please see https://github.com/circleci-public/circleci-dockerfiles
+### for a complete list of Dockerfiles for each tag/variant of this image
 ###
-FROM php:7.2.6-cli-stretch
+
+FROM php:7.2.7-cli-stretch
 
 # make Apt non-interactive
 RUN echo 'APT::Get::Assume-Yes "true";' > /etc/apt/apt.conf.d/90circleci \
@@ -79,7 +82,13 @@ RUN groupadd --gid 3434 circleci \
 # Install composer
 RUN php -r "copy('https://raw.githubusercontent.com/composer/getcomposer.org/master/web/installer', 'composer-setup.php');" &&     php composer-setup.php &&     php -r "unlink('composer-setup.php');" &&     mv composer.phar /usr/local/bin/composer
 
+# Install XDebug
 RUN (pecl install xdebug || pecl install xdebug-2.5.5) && docker-php-ext-enable xdebug
+
+# Install common extensions
+RUN apt install -y libicu-dev zlib1g-dev
+RUN docker-php-ext-configure intl && docker-php-ext-install intl
+RUN docker-php-ext-install zip
 # END IMAGE CUSTOMIZATIONS
 
 USER circleci

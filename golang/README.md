@@ -1,10 +1,11 @@
+
 _**Note:** due to Docker Hub limitations, there may be more variants available than are displayed on the Tags page. For a complete list, along with Dockerfiles, see our **[circleci-dockerfiles](https://github.com/CircleCI-Public/circleci-dockerfiles)** repository._
 
-_Images from [hub.docker.com/r/circleci](https://hub.docker.com/r/circleci) are tracked in circleci-dockerfile's **[master branch](https://github.com/circleci-public/circleci-dockerfiles)**; images from [hub.docker.com/r/ccistaging](https://hub.docker.com/r/ccistaging) are tracked in circleci-dockerfile's **[staging branch](https://github.com/CircleCI-Public/circleci-dockerfiles/tree/staging)**._
+_Images from [hub.docker.com/r/circleci](https://hub.docker.com/r/circleci) are tracked in **circleci-dockerfile's [master branch](https://github.com/circleci-public/circleci-dockerfiles)**; images from [hub.docker.com/r/ccistaging](https://hub.docker.com/r/ccistaging) are tracked in **circleci-dockerfiles' [staging branch](https://github.com/CircleCI-Public/circleci-dockerfiles/tree/staging)**._
 
 ## Why
 
-Extends the official image of [Go (golang)](https://hub.docker.com/_/golang) for better use on CircleCI.
+Extends the official image of [Go (Golang)](https://hub.docker.com/_/golang) for better use on CircleCI.
 
 We aim to have CircleCI-extended images ease adoption of Docker and CircleCI. Once users are successful, we encourage them to build and customize images to suit their individual projects' needs.
 
@@ -14,7 +15,7 @@ CircleCI is experimenting with this image and may change it in the future in an 
 
 ## User Feedback
 
-If you have any problems with or questions about this image, please contact us on [CircleCI's Discuss forum](https://discuss.circleci.com/c/circleci-2-0).
+If you have any problems with or questions about this image, please contact us on [CircleCI's Discuss forum](https://discuss.circleci.com/c/environment).
 
 ## Source
 
