@@ -4,7 +4,7 @@
 ### for a complete list of Dockerfiles for each tag/variant of this image
 ###
 
-FROM node:10.8.0-jessie
+FROM node:10.9.0-jessie
 
 # make Apt non-interactive
 RUN echo 'APT::Get::Assume-Yes "true";' > /etc/apt/apt.conf.d/90circleci \

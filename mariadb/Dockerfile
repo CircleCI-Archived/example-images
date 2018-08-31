@@ -4,7 +4,7 @@
 ### for a complete list of Dockerfiles for each tag/variant of this image
 ###
 
-FROM mariadb:10.3.8-bionic
+FROM mariadb:10.3.9-bionic
 
 ENV MYSQL_ALLOW_EMPTY_PASSWORD=true \
     MYSQL_DATABASE=circle_test \

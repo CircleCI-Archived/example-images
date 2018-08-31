@@ -1,6 +1,8 @@
+###
 ### this Dockerfile is an example representing one variant of this image;
 ### please see https://github.com/circleci-public/circleci-dockerfiles
 ### for a complete list of Dockerfiles for each tag/variant of this image
+###
 
 FROM openjdk:10.0.2-13-jdk-sid
 
@@ -92,8 +94,8 @@ RUN curl --silent --show-error --location --fail --retry 3 --output /tmp/apache-
 
 ENV ANT_HOME=/opt/apache-ant
 
-# Install Gradle Version: 4.9
-RUN curl --silent --show-error --location --fail --retry 3 --output /tmp/gradle.zip     https://services.gradle.org/distributions/gradle-4.9-bin.zip   && unzip -d /opt /tmp/gradle.zip   && rm /tmp/gradle.zip   && ln -s /opt/gradle-* /opt/gradle   && /opt/gradle/bin/gradle -version
+# Install Gradle Version: 4.10
+RUN curl --silent --show-error --location --fail --retry 3 --output /tmp/gradle.zip     https://services.gradle.org/distributions/gradle-4.10-bin.zip   && unzip -d /opt /tmp/gradle.zip   && rm /tmp/gradle.zip   && ln -s /opt/gradle-* /opt/gradle   && /opt/gradle/bin/gradle -version
 
 # Install sbt from https://circle-downloads.s3.amazonaws.com/circleci-images/cache/linux-amd64/sbt-latest.tgz
 RUN curl --silent --show-error --location --fail --retry 3 --output /tmp/sbt.tgz https://circle-downloads.s3.amazonaws.com/circleci-images/cache/linux-amd64/sbt-latest.tgz   && tar -xzf /tmp/sbt.tgz -C /opt/   && rm /tmp/sbt.tgz   && /opt/sbt/bin/sbt sbtVersion
