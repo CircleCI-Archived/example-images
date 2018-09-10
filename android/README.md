@@ -1,5 +1,3 @@
-**Notice:** Images with browser variants will see an upgrade to Firefox 56+ and Chrome 59+ on Monday, September 3, 2018. To avoid any changes to the image you're using please lock your configurations to the sha256 of an image.
-
 ```
 Example:
   image: redis@sha256:54057dd7e125ca41afe526a877e8bd35ec2cdd33b9217e022ed37bdcf7d09673
@@ -15,6 +13,7 @@ _Images from [hub.docker.com/r/circleci](https://hub.docker.com/r/circleci) are 
 
 Docker provides official images for popular languages and services that are aimed to work in common contexts, whether in development or in production.
 
+However, we frequently found them lacking some necessary tools for dev/CI use. CircleCI publishes this image to extend the official image in the following ways:
 
 
 *This is the defacto image. If you are unsure what your needs are, you probably want to use this one.*

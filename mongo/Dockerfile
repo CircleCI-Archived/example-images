@@ -4,6 +4,6 @@
 ### for a complete list of Dockerfiles for each tag/variant of this image
 ###
 
-FROM mongo:4.0.1
+FROM mongo:4.0.2
 
 CMD ["mongod", "--nojournal", "--noprealloc", "--smallfiles"]
