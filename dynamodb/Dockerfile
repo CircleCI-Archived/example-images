@@ -4,7 +4,7 @@
 ### for a complete list of Dockerfiles for each tag/variant of this image
 ###
 
-FROM openjdk:10.0.2-13-jdk-sid
+FROM openjdk:11.0.1-jdk-sid
 
 # It's DynamoDB, in Docker!
 #

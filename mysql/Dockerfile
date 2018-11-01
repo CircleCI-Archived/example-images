@@ -4,7 +4,7 @@
 ### for a complete list of Dockerfiles for each tag/variant of this image
 ###
 
-FROM mysql:8.0.12
+FROM mysql:8.0.13
 
 ENV MYSQL_ALLOW_EMPTY_PASSWORD=true \
     MYSQL_DATABASE=circle_test \
