@@ -5,7 +5,7 @@ Information about CircleCI's convenience images is available in the following lo
 - https://circleci.com/docs/2.0/circleci-images
 - https://github.com/circleci/circleci-images
 
-All CircleCI convenience images are published to the official CircleCI Docker Hub page:
+All CircleCI convenience images are published to the official CircleCI Docker Hub organization:
 
 - https://hub.docker.com/r/circleci
 
