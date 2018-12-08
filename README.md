@@ -1,4 +1,4 @@
-This repository is automated and is not actively managed or maintained on its own.
+### This repository is automated and is not actively managed or maintained on its own
 
 Information about CircleCI's convenience images is available in the following locations:
 
