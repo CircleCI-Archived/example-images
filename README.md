@@ -13,6 +13,7 @@ Dockerfiles for all CircleCI convenience images are available in the following r
 
 - https://github.com/circleci-public/circleci-dockerfiles
 
-Please file any issues with CircleCI convenience images via the **circleci-images** repository:
+Please file any CircleCI convenience image issues or pull requests via the **circleci-images** repository:
 
 - https://github.com/circleci/circleci-images/issues
+- https://github.com/circleci/circleci-images/pulls
