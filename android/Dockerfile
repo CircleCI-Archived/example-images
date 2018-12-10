@@ -161,10 +161,7 @@ RUN yes | sdkmanager --licenses && sdkmanager --update
 RUN sdkmanager \
   "tools" \
   "platform-tools" \
-  "emulator" \
-  "extras;android;m2repository" \
-  "extras;google;m2repository" \
-  "extras;google;google_play_services"
+  "emulator"
 
 RUN sdkmanager \
   "build-tools;25.0.0" \
