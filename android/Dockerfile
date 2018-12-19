@@ -178,7 +178,7 @@ RUN sdkmanager \
   "build-tools;28.0.3"
 
 # API_LEVEL string gets replaced by m4
-RUN sdkmanager "platforms;android-23"
+RUN sdkmanager "platforms;android-25"
 ###
 ### this Dockerfile is an example representing one variant of this image;
 ### please see https://github.com/circleci-public/circleci-dockerfiles
