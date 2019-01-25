@@ -25,7 +25,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \
   && mkdir -p /usr/share/man/man1 \
   && apt-get install -y \
-    git mercurial xvfb \
+    git mercurial xvfb apt \
     locales sudo openssh-client ca-certificates tar gzip parallel \
     net-tools netcat unzip zip bzip2 gnupg curl wget
 
@@ -180,7 +180,7 @@ RUN sdkmanager \
   "build-tools;28.0.3"
 
 # API_LEVEL string gets replaced by m4
-RUN sdkmanager "platforms;android-28"
+RUN sdkmanager "platforms;android-25"
 
 ARG ndk_version=android-ndk-r17b
 ARG android_ndk_home=/opt/android/${ndk_version}
