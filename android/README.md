@@ -2,18 +2,27 @@ _**Note:** due to Docker Hub limitations, there may be more variants available t
 
 _Images from [hub.docker.com/r/circleci](https://hub.docker.com/r/circleci) are tracked in **circleci-dockerfiles' [master branch](https://github.com/circleci-public/circleci-dockerfiles)**; images from [hub.docker.com/r/ccistaging](https://hub.docker.com/r/ccistaging) are tracked in **circleci-dockerfiles' [staging branch](https://github.com/CircleCI-Public/circleci-dockerfiles/tree/staging)**._
 
+## Stay informed about CircleCI image changes/announcements
+
+As part of regular maintenance, changes are occassionally made to various images, from updating images' contents, to changing how image variants are tagged. With the exception of bugfixes or security patches, these changes will always be announced in advance. Changes are posted in the Announcements section of CircleCI Discuss; relevant posts will always have a `convenience-images` tag:
+
+- https://discuss.circleci.com/c/announcements
+- https://discuss.circleci.com/tags/convenience-images
+
+By creating a Discuss account, you can subscribe to these posts, in order to receive notifications via email:
+
+https://discuss.circleci.com
+
 ## Why
 
-Docker provides official images for popular languages and services that are aimed to work in common contexts, whether in development or in production.
 
-However, we frequently found them lacking some necessary tools for dev/CI use. CircleCI publishes this image to extend the official image in the following ways:
+## Notable Variants
 
-1. Common tools used in development and CI are installed (e.g., `git`, `ssh`, `tar`, `ca-certificates`, `curl`, `wget`)
-2. Docker tools: the latest `docker`, `docker-compose`, and `dockerize` are installed
-3. Tag variants for various common use cases, e.g., images with browser tools installed and configured to run in a containized environment
-4. Use a non-root user (namely `circleci`) by default (many applications refuse to run (e.g., `chrome`) or their behavior differs (e.g., `tar` file ownership behavior) when run as root)
 
-We aim to have CircleCI-extended images ease adoption of Docker and CircleCI. Once users are successful, we encourage them to build and customize images to suit their individual projects' needs.
+*This is the defacto image. If you are unsure what your needs are, you probably want to use this one.*
+
+
+*This image makes browser testing easier. It extends the defacto image and installs Firefox and Chrome/chromedriver and configures them to run in a containerized environment.*
 
 ## Experimental
 

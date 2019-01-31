@@ -3,6 +3,17 @@ _**Note:** due to Docker Hub limitations, there may be more variants available t
 
 _Images from [hub.docker.com/r/circleci](https://hub.docker.com/r/circleci) are tracked in **circleci-dockerfile's [master branch](https://github.com/circleci-public/circleci-dockerfiles)**; images from [hub.docker.com/r/ccistaging](https://hub.docker.com/r/ccistaging) are tracked in **circleci-dockerfiles' [staging branch](https://github.com/CircleCI-Public/circleci-dockerfiles/tree/staging)**._
 
+## Stay informed about CircleCI image changes/announcements
+
+As part of regular maintenance, changes are occassionally made to various images, from updating images' contents, to changing how image variants are tagged. With the exception of bugfixes or security patches, these changes will always be announced in advance. Changes are posted in the Announcements section of CircleCI Discuss; relevant posts will always have a `convenience-images` tag:
+
+- https://discuss.circleci.com/c/announcements
+- https://discuss.circleci.com/tags/convenience-images
+
+By creating a Discuss account, you can subscribe to these posts, in order to receive notifications via email:
+
+https://discuss.circleci.com
+
 ## Why
 
 Extends the official image of [PHP](https://hub.docker.com/_/php) for better use on CircleCI.
