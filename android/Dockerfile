@@ -27,7 +27,8 @@ RUN if grep -q Debian /etc/os-release && grep -q jessie /etc/os-release; then \
 	sudo rm /etc/apt/sources.list \
     && echo "deb http://archive.debian.org/debian jessie main" | sudo tee -a /etc/apt/sources.list \
     && echo "deb http://archive.debian.org/debian jessie/updates main" | sudo tee -a /etc/apt/sources.list \
-    && echo "deb http://archive.debian.org/debian jessie-updates main" | sudo tee -a /etc/apt/sources.list
+    && echo "deb http://archive.debian.org/debian jessie-updates main" | sudo tee -a /etc/apt/sources.list \
+	; fi
 
 # man directory is missing in some base images
 # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=863199
@@ -189,4 +190,4 @@ RUN sdkmanager \
   "build-tools;28.0.3"
 
 # API_LEVEL string gets replaced by m4
-RUN sdkmanager "platforms;android-24"
+RUN sdkmanager "platforms;android-23"
