@@ -20,6 +20,15 @@ RUN echo 'APT::Get::Assume-Yes "true";' > /etc/apt/apt.conf.d/90circleci \
 
 ENV DEBIAN_FRONTEND=noninteractive
 
+# Debian Jessie is EOL'd and original repos don't work.
+# Switch to the archive mirror until we can get people to
+# switch to Stretch.
+RUN if grep -q Debian /etc/os-release && grep -q jessie /etc/os-release; then \
+	sudo rm /etc/apt/sources.list \
+    && echo "deb http://archive.debian.org/debian jessie main" | sudo tee -a /etc/apt/sources.list \
+    && echo "deb http://archive.debian.org/debian jessie/updates main" | sudo tee -a /etc/apt/sources.list \
+    && echo "deb http://archive.debian.org/debian jessie-updates main" | sudo tee -a /etc/apt/sources.list
+
 # man directory is missing in some base images
 # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=863199
 RUN apt-get update \
@@ -180,15 +189,4 @@ RUN sdkmanager \
   "build-tools;28.0.3"
 
 # API_LEVEL string gets replaced by m4
-RUN sdkmanager "platforms;android-28"
-
-ARG ndk_version=android-ndk-r17b
-ARG android_ndk_home=/opt/android/${ndk_version}
-
-# install NDK
-RUN curl --silent --show-error --location --fail --retry 3 --output /tmp/${ndk_version}.zip https://dl.google.com/android/repository/${ndk_version}-linux-x86_64.zip && \
-    sudo unzip -q /tmp/${ndk_version}.zip -d /opt/android && \
-    rm /tmp/${ndk_version}.zip && \
-    sudo chown -R circleci:circleci ${android_ndk_home}
-
-ENV ANDROID_NDK_HOME ${android_ndk_home}
+RUN sdkmanager "platforms;android-24"
