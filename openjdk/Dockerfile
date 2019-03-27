@@ -4,7 +4,7 @@
 ### for a complete list of Dockerfiles for each tag/variant of this image
 ###
 
-FROM circleci/openjdk:8u181-jdk-stretch
+FROM circleci/openjdk:11.0.2-jdk-stretch
 
 # install java 8
 #
