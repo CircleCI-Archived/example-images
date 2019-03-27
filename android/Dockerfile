@@ -25,7 +25,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 # switch to Stretch.
 RUN if grep -q Debian /etc/os-release && grep -q jessie /etc/os-release; then \
 	rm /etc/apt/sources.list \
-    && echo "deb http://deb.debian.org/debian/ jessie main" >> /etc/apt/sources.list \
+    && echo "deb http://archive.debian.org/debian/ jessie main" >> /etc/apt/sources.list \
+    && echo "deb http://archive.debian.org/debian-security/ jessie/updates main" >> /etc/apt/sources.list \
 	; fi
 
 # man directory is missing in some base images
@@ -188,4 +189,4 @@ RUN sdkmanager \
   "build-tools;28.0.3"
 
 # API_LEVEL string gets replaced by m4
-RUN sdkmanager "platforms;android-27"
+RUN sdkmanager "platforms;android-25"
