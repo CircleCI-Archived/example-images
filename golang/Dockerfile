@@ -4,7 +4,7 @@
 ### for a complete list of Dockerfiles for each tag/variant of this image
 ###
 
-FROM golang:1.12.1
+FROM golang:1.12.2
 
 # make Apt non-interactive
 RUN echo 'APT::Get::Assume-Yes "true";' > /etc/apt/apt.conf.d/90circleci \
@@ -20,6 +20,10 @@ RUN if grep -q Debian /etc/os-release && grep -q jessie /etc/os-release; then \
     && echo "deb http://archive.debian.org/debian/ jessie main" >> /etc/apt/sources.list \
     && echo "deb http://security.debian.org/debian-security jessie/updates main" >> /etc/apt/sources.list \
 	; fi
+
+# Make sure PATH includes ~/.local/bin
+# https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=839155
+RUN echo 'PATH="$HOME/.local/bin:$PATH"' >> /etc/profile.d/user-local-path.sh
 
 # man directory is missing in some base images
 # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=863199
