@@ -29,6 +29,10 @@ RUN if grep -q Debian /etc/os-release && grep -q jessie /etc/os-release; then \
     && echo "deb http://security.debian.org/debian-security jessie/updates main" >> /etc/apt/sources.list \
 	; fi
 
+# Make sure PATH includes ~/.local/bin
+# https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=839155
+RUN echo 'PATH="$HOME/.local/bin:$PATH"' >> /etc/profile.d/user-local-path.sh
+
 # man directory is missing in some base images
 # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=863199
 RUN apt-get update \
@@ -189,4 +193,15 @@ RUN sdkmanager \
   "build-tools;28.0.3"
 
 # API_LEVEL string gets replaced by m4
-RUN sdkmanager "platforms;android-27"
+RUN sdkmanager "platforms;android-25"
+
+ARG ndk_version=android-ndk-r17b
+ARG android_ndk_home=/opt/android/${ndk_version}
+
+# install NDK
+RUN curl --silent --show-error --location --fail --retry 3 --output /tmp/${ndk_version}.zip https://dl.google.com/android/repository/${ndk_version}-linux-x86_64.zip && \
+    sudo unzip -q /tmp/${ndk_version}.zip -d /opt/android && \
+    rm /tmp/${ndk_version}.zip && \
+    sudo chown -R circleci:circleci ${android_ndk_home}
+
+ENV ANDROID_NDK_HOME ${android_ndk_home}
