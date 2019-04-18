@@ -4,6 +4,6 @@
 ### for a complete list of Dockerfiles for each tag/variant of this image
 ###
 
-FROM mongo:4.0.8
+FROM mongo:4.0.9
 
 CMD ["mongod", "--nojournal"]
