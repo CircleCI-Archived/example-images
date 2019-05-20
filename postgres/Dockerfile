@@ -4,7 +4,7 @@
 ### for a complete list of Dockerfiles for each tag/variant of this image
 ###
 
-FROM postgres:11.2
+FROM postgres:11.3
 
 ENV POSTGRES_DB=circle_test
 
