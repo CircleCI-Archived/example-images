@@ -4,7 +4,7 @@
 ### for a complete list of Dockerfiles for each tag/variant of this image
 ###
 
-FROM golang:1.12.4
+FROM golang:1.12.5
 
 # make Apt non-interactive
 RUN echo 'APT::Get::Assume-Yes "true";' > /etc/apt/apt.conf.d/90circleci \
@@ -32,7 +32,7 @@ RUN apt-get update \
   && apt-get install -y \
     git mercurial xvfb apt \
     locales sudo openssh-client ca-certificates tar gzip parallel \
-    net-tools netcat unzip zip bzip2 gnupg curl wget
+    net-tools netcat unzip zip bzip2 gnupg curl wget make
 
 
 # Set timezone to UTC by default
