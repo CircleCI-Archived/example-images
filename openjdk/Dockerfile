@@ -6,58 +6,39 @@
 
 FROM circleci/openjdk:8u212-b04-jdk-stretch
 
-# install java 8
 #
-RUN if grep -q Debian /etc/os-release && grep -q jessie /etc/os-release; then \
-    echo "deb http://archive.debian.org/debian/ jessie-backports main" | sudo tee -a /etc/apt/sources.list \
-    && echo "deb-src http://archive.debian.org/debian/ jessie-backports main" | sudo tee -a /etc/apt/sources.list \
-    && echo "Acquire::Check-Valid-Until false;" | sudo tee -a /etc/apt/apt.conf.d/10-nocheckvalid \
-    && echo 'Package: *\nPin: origin "archive.debian.org"\nPin-Priority: 500' | sudo tee -a /etc/apt/preferences.d/10-archive-pin \
-    && sudo apt-get update; sudo apt-get install -y -t jessie-backports openjdk-8-jre openjdk-8-jre-headless openjdk-8-jdk openjdk-8-jdk-headless \
-  ; elif grep -q Ubuntu /etc/os-release && grep -q Trusty /etc/os-release; then \
-    echo "deb http://ppa.launchpad.net/openjdk-r/ppa/ubuntu trusty main" | sudo tee -a /etc/apt/sources.list \
-    && echo "deb-src http://ppa.launchpad.net/openjdk-r/ppa/ubuntu trusty main" | sudo tee -a /etc/apt/sources.list \
-    && sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key DA1A4A13543B466853BAF164EB9B1D8886F44E2A \
-    && sudo apt-get update; sudo apt-get install -y openjdk-8-jre openjdk-8-jre-headless openjdk-8-jdk openjdk-8-jdk-headless \
-  ; else \
-    sudo apt-get update; sudo apt-get install -y openjdk-8-jre openjdk-8-jre-headless openjdk-8-jdk openjdk-8-jdk-headless \
-  ; fi
-
-ENV OPENSSL_CONF /
-
-## install phantomjs
+# Install Java 11 LTS / OpenJDK 11
 #
-RUN PHANTOMJS_URL="https://circle-downloads.s3.amazonaws.com/circleci-images/cache/linux-amd64/phantomjs-latest.tar.bz2" \
-  && sudo apt-get install libfontconfig \
-  && curl --silent --show-error --location --fail --retry 3 --output /tmp/phantomjs.tar.bz2 ${PHANTOMJS_URL} \
-  && tar -x -C /tmp -f /tmp/phantomjs.tar.bz2 \
-  && sudo mv /tmp/phantomjs-*-linux-x86_64/bin/phantomjs /usr/local/bin \
-  && rm -rf /tmp/phantomjs.tar.bz2 /tmp/phantomjs-* \
-  && phantomjs --version
+RUN if grep -q Debian /etc/os-release && grep -q stretch /etc/os-release; then \
+		echo 'deb http://deb.debian.org/debian stretch-backports main' | sudo tee -a /etc/apt/sources.list.d/stretch-backports.list; \
+	elif grep -q Ubuntu /etc/os-release && grep -q xenial /etc/os-release; then \
+		sudo apt-get update && sudo apt-get install -y software-properties-common && \
+		sudo add-apt-repository -y ppa:openjdk-r/ppa; \
+	fi && \
+	sudo apt-get update && sudo apt-get install -y openjdk-11-jre openjdk-11-jre-headless openjdk-11-jdk openjdk-11-jdk-headless && \
+	sudo apt-get install -y bzip2 libgconf-2-4 # for extracting firefox and running chrome, respectively
 
 # install firefox
-
-# If you are upgrading to any version newer than 47.0.1, you must check the compatibility with
-# selenium. See https://github.com/SeleniumHQ/selenium/issues/2559#issuecomment-237079591
-
-RUN FIREFOX_URL="https://s3.amazonaws.com/circle-downloads/firefox-mozilla-build_47.0.1-0ubuntu1_amd64.deb" \
-  && curl --silent --show-error --location --fail --retry 3 --output /tmp/firefox.deb $FIREFOX_URL \
-  && echo 'ef016febe5ec4eaf7d455a34579834bcde7703cb0818c80044f4d148df8473bb  /tmp/firefox.deb' | sha256sum -c \
-  && sudo dpkg -i /tmp/firefox.deb || sudo apt-get -f install  \
+#
+RUN FIREFOX_URL="https://download.mozilla.org/?product=firefox-latest-ssl&os=linux64&lang=en-US" \
+  && ACTUAL_URL=$(curl -Ls -o /dev/null -w %{url_effective} $FIREFOX_URL) \
+  && curl --silent --show-error --location --fail --retry 3 --output /tmp/firefox.tar.bz2 $ACTUAL_URL \
+  && sudo tar -xvjf /tmp/firefox.tar.bz2 -C /opt \
+  && sudo ln -s /opt/firefox/firefox /usr/local/bin/firefox \
   && sudo apt-get install -y libgtk3.0-cil-dev libasound2 libasound2 libdbus-glib-1-2 libdbus-1-3 \
-  && rm -rf /tmp/firefox.deb \
+  && rm -rf /tmp/firefox.* \
   && firefox --version
 
-# install geckodriver—disabling this temporarily, we will likely want this code in the future, but until we're ready to upgrade our version of firefox to 53+, geckodriver wont' be compatible...
+# install geckodriver
 
-# RUN export GECKODRIVER_LATEST_RELEASE_URL=$(curl https://api.github.com/repos/mozilla/geckodriver/releases/latest | jq -r ".assets[] | select(.name | test(\"linux64\")) | .browser_download_url") \
-#      && curl --silent --show-error --location --fail --retry 3 --output /tmp/geckodriver_linux64.tar.gz "$GECKODRIVER_LATEST_RELEASE_URL" \
-#      && cd /tmp \
-#      && tar xf geckodriver_linux64.tar.gz \
-#      && rm -rf geckodriver_linux64.tar.gz \
-#      && sudo mv geckodriver /usr/local/bin/geckodriver \
-#      && sudo chmod +x /usr/local/bin/geckodriver \
-#      && geckodriver --version
+RUN export GECKODRIVER_LATEST_RELEASE_URL=$(curl https://api.github.com/repos/mozilla/geckodriver/releases/latest | jq -r ".assets[] | select(.name | test(\"linux64\")) | .browser_download_url") \
+     && curl --silent --show-error --location --fail --retry 3 --output /tmp/geckodriver_linux64.tar.gz "$GECKODRIVER_LATEST_RELEASE_URL" \
+     && cd /tmp \
+     && tar xf geckodriver_linux64.tar.gz \
+     && rm -rf geckodriver_linux64.tar.gz \
+     && sudo mv geckodriver /usr/local/bin/geckodriver \
+     && sudo chmod +x /usr/local/bin/geckodriver \
+     && geckodriver --version
 
 # install chrome
 
@@ -78,9 +59,6 @@ RUN CHROME_VERSION="$(google-chrome --version)" \
     && sudo mv chromedriver /usr/local/bin/chromedriver \
     && sudo chmod +x /usr/local/bin/chromedriver \
     && chromedriver --version
-      
-# install libgconf-2-4 manually since chrome no longer pulls it in automatically
-RUN sudo apt-get install -y libgconf-2-4
 
 # start xvfb automatically to avoid needing to express in circle.yml
 ENV DISPLAY :99
