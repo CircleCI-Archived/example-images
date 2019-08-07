@@ -4,7 +4,7 @@
 ### for a complete list of Dockerfiles for each tag/variant of this image
 ###
 
-FROM python:3.7.3
+FROM python:3.7.4
 
 # make Apt non-interactive
 RUN echo 'APT::Get::Assume-Yes "true";' > /etc/apt/apt.conf.d/90circleci \
@@ -23,6 +23,7 @@ RUN if grep -q Debian /etc/os-release && grep -q jessie /etc/os-release; then \
 
 # Make sure PATH includes ~/.local/bin
 # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=839155
+# This only works for root. The circleci user is done near the end of this Dockerfile
 RUN echo 'PATH="$HOME/.local/bin:$PATH"' >> /etc/profile.d/user-local-path.sh
 
 # man directory is missing in some base images
@@ -97,5 +98,8 @@ RUN sudo pip install --no-cache pipenv poetry
 # END IMAGE CUSTOMIZATIONS
 
 USER circleci
+
+# Physically create these directories so that ~/.profile will add them to PATH
+RUN mkdir $HOME/{,.local/}bin
 
 CMD ["/bin/sh"]

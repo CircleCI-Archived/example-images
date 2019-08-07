@@ -4,7 +4,7 @@
 ### for a complete list of Dockerfiles for each tag/variant of this image
 ###
 
-FROM php:7.3.6-cli-stretch
+FROM php:7.3.8-cli-buster
 
 # make Apt non-interactive
 RUN echo 'APT::Get::Assume-Yes "true";' > /etc/apt/apt.conf.d/90circleci \
@@ -23,6 +23,7 @@ RUN if grep -q Debian /etc/os-release && grep -q jessie /etc/os-release; then \
 
 # Make sure PATH includes ~/.local/bin
 # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=839155
+# This only works for root. The circleci user is done near the end of this Dockerfile
 RUN echo 'PATH="$HOME/.local/bin:$PATH"' >> /etc/profile.d/user-local-path.sh
 
 # man directory is missing in some base images
@@ -95,17 +96,24 @@ RUN groupadd --gid 3434 circleci \
 RUN echo 'Defaults    env_keep += "PHP_INI_DIR"' >> /etc/sudoers.d/env_keep
 
 # Install composer
-RUN php -r "copy('https://raw.githubusercontent.com/composer/getcomposer.org/master/web/installer', 'composer-setup.php');" &&     php composer-setup.php &&     php -r "unlink('composer-setup.php');" &&     mv composer.phar /usr/local/bin/composer
+RUN php -r "copy('https://raw.githubusercontent.com/composer/getcomposer.org/master/web/installer', 'composer-setup.php');" && \
+    php composer-setup.php && \
+    php -r "unlink('composer-setup.php');" && \
+    mv composer.phar /usr/local/bin/composer
 
 # Install XDebug
 RUN (pecl install xdebug || pecl install xdebug-2.5.5 || pecl install xdebug-2.7.1) && docker-php-ext-enable xdebug
 
 # Install common extensions
-RUN apt install -y libicu-dev zlib1g-dev libzip-dev &&     rm -rf /var/lib/apt/lists/*
+RUN apt install -y libicu-dev zlib1g-dev libzip-dev && \
+    rm -rf /var/lib/apt/lists/*
 RUN docker-php-ext-configure intl && docker-php-ext-install intl
 RUN docker-php-ext-install zip
 # END IMAGE CUSTOMIZATIONS
 
 USER circleci
+
+# Physically create these directories so that ~/.profile will add them to PATH
+RUN mkdir $HOME/{,.local/}bin
 
 CMD ["/bin/sh"]
