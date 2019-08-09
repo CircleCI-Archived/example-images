@@ -4,12 +4,7 @@
 ### for a complete list of Dockerfiles for each tag/variant of this image
 ###
 
-#
-# this Dockerfile is an example representing one variant of this image;
-### please see https://github.com/circleci-public/circleci-dockerfiles
-### for a complete list of Dockerfiles for each tag/variant of this image
-#
-FROM circleci/openjdk:11.0.3-jdk-stretch-node
+FROM circleci/openjdk:8u222-jdk-stretch
 
 #
 # Install Java 11 LTS / OpenJDK 11
