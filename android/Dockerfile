@@ -115,6 +115,7 @@ ENV HOME /home/circleci
 
 RUN sudo apt-get update -qqy && sudo apt-get install -qqy \
         python-dev \
+        python-pip \
         python-setuptools \
         apt-transport-https \
         lsb-release && \
@@ -122,7 +123,6 @@ RUN sudo apt-get update -qqy && sudo apt-get install -qqy \
 
 RUN sudo apt-get update && sudo apt-get install gcc-multilib && \
     sudo rm -rf /var/lib/apt/lists/* && \
-    sudo easy_install -U pip && \
     sudo pip uninstall crcmod && \
     sudo pip install --no-cache -U crcmod
 
@@ -200,7 +200,7 @@ RUN sdkmanager \
   "build-tools;29.0.0"
 
 # API_LEVEL string gets replaced by m4
-RUN sdkmanager "platforms;android-29"
+RUN sdkmanager "platforms;android-27"
 ###
 ### this Dockerfile is an example representing one variant of this image;
 ### please see https://github.com/circleci-public/circleci-dockerfiles
@@ -213,12 +213,12 @@ RUN whoami
 
 # node installations command expect to run as root
 USER root
-## Using node installation from https://raw.githubusercontent.com/nodejs/docker-node/f8f2384f7edc345f5ffc0496458005981b512882/10/stretch/Dockerfile
+## Using node installation from https://raw.githubusercontent.com/nodejs/docker-node/2524f98f3bcedcfc943a52feb519adf0ee0e3629/10/stretch/Dockerfile
 
 RUN groupadd --gid 1000 node \
   && useradd --uid 1000 --gid node --shell /bin/bash --create-home node
 
-ENV NODE_VERSION 10.16.0
+ENV NODE_VERSION 10.16.2
 
 RUN ARCH= && dpkgArch="$(dpkg --print-architecture)" \
   && case "${dpkgArch##*-}" in \
@@ -257,7 +257,7 @@ RUN ARCH= && dpkgArch="$(dpkg --print-architecture)" \
   && rm "node-v$NODE_VERSION-linux-$ARCH.tar.xz" SHASUMS256.txt.asc SHASUMS256.txt \
   && ln -s /usr/local/bin/node /usr/local/bin/nodejs
 
-ENV YARN_VERSION 1.16.0
+ENV YARN_VERSION 1.17.3
 
 RUN set -ex \
   && for key in \
