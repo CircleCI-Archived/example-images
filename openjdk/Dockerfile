@@ -9,7 +9,7 @@
 ### please see https://github.com/circleci-public/circleci-dockerfiles
 ### for a complete list of Dockerfiles for each tag/variant of this image
 #
-FROM circleci/openjdk:11.0.3-jdk-stretch-node
+FROM circleci/openjdk:11.0.4-jdk-stretch-node
 
 #
 # Install Java 11 LTS / OpenJDK 11
@@ -70,8 +70,8 @@ RUN curl --silent --show-error --location --fail --retry 3 --output /tmp/google-
 
 RUN CHROME_VERSION="$(google-chrome --version)" \
     && export CHROMEDRIVER_RELEASE="$(echo $CHROME_VERSION | sed 's/^Google Chrome //')" && export CHROMEDRIVER_RELEASE=${CHROMEDRIVER_RELEASE%%.*} \
-    && CHROMEDRIVER_VERSION=$(curl --location --fail --retry 3 http://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROMEDRIVER_RELEASE}) \
-    && curl --silent --show-error --location --fail --retry 3 --output /tmp/chromedriver_linux64.zip "http://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip" \
+    && CHROMEDRIVER_VERSION=$(curl --silent --show-error --location --fail --retry 4 --retry-delay 5 http://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROMEDRIVER_RELEASE}) \
+    && curl --silent --show-error --location --fail --retry 4 --retry-delay 5 --output /tmp/chromedriver_linux64.zip "http://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip" \
     && cd /tmp \
     && unzip chromedriver_linux64.zip \
     && rm -rf chromedriver_linux64.zip \
