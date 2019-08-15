@@ -105,7 +105,10 @@ RUN groupadd --gid 3434 circleci \
 USER circleci
 
 # Physically create these directories so that ~/.profile will add them to PATH
+# Switching user can confuse Docker's idea of $HOME, so we set it explicitly
+ENV HOME /home/circleci
 RUN mkdir -p $HOME/bin && mkdir -p $HOME/.local/bin
+ENV PATH ${HOME}/.local/bin:${HOME}/bin:${PATH}
 
 CMD ["/bin/sh"]
 
@@ -205,4 +208,4 @@ RUN sdkmanager \
   "build-tools;29.0.1"
 
 # API_LEVEL string gets replaced by m4
-RUN sdkmanager "platforms;android-26"
+RUN sdkmanager "platforms;android-28"
