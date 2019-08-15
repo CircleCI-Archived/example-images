@@ -115,5 +115,6 @@ USER circleci
 
 # Physically create these directories so that ~/.profile will add them to PATH
 RUN mkdir -p $HOME/bin && mkdir -p $HOME/.local/bin
+ENV PATH ${HOME}/.local/bin:${HOME}/bin:${PATH}
 
 CMD ["/bin/sh"]
