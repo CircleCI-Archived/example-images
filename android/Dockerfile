@@ -103,11 +103,7 @@ RUN groupadd --gid 3434 circleci \
 # END IMAGE CUSTOMIZATIONS
 
 USER circleci
-
-# Switching user can confuse Docker's idea of $HOME, so we set it explicitly
-ENV HOME /home/circleci
-RUN mkdir -p $HOME/bin && mkdir -p $HOME/.local/bin
-ENV PATH ${HOME}/.local/bin:${HOME}/bin:${PATH}
+ENV PATH /home/circleci/.local/bin:/home/circleci/bin:${PATH}
 
 CMD ["/bin/sh"]
 
@@ -207,7 +203,7 @@ RUN sdkmanager \
   "build-tools;29.0.1"
 
 # API_LEVEL string gets replaced by m4
-RUN sdkmanager "platforms;android-25"
+RUN sdkmanager "platforms;android-24"
 ###
 ### this Dockerfile is an example representing one variant of this image;
 ### please see https://github.com/circleci-public/circleci-dockerfiles
@@ -220,12 +216,12 @@ RUN whoami
 
 # node installations command expect to run as root
 USER root
-## Using node installation from https://raw.githubusercontent.com/nodejs/docker-node/2524f98f3bcedcfc943a52feb519adf0ee0e3629/10/stretch/Dockerfile
+## Using node installation from https://raw.githubusercontent.com/nodejs/docker-node/a9c583095d4cf08bbd68f570a1f9a99780820351/10/stretch/Dockerfile
 
 RUN groupadd --gid 1000 node \
   && useradd --uid 1000 --gid node --shell /bin/bash --create-home node
 
-ENV NODE_VERSION 10.16.2
+ENV NODE_VERSION 10.16.3
 
 RUN ARCH= && dpkgArch="$(dpkg --print-architecture)" \
   && case "${dpkgArch##*-}" in \
