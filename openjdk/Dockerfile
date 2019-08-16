@@ -4,7 +4,7 @@
 ### for a complete list of Dockerfiles for each tag/variant of this image
 ###
 
-FROM circleci/openjdk:8u222-jdk-stretch
+FROM circleci/openjdk:11.0.4-jdk-stretch
 
 #
 # Install Java 11 LTS / OpenJDK 11
