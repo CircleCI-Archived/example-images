@@ -18,7 +18,7 @@ https://discuss.circleci.com
 
 Extends the official image of [Python](https://hub.docker.com/_/python) for better use on CircleCI.
 
-We aim to have CircleCI-extended images ease adoption of Docker and CircleCI. Once users are successful, we encourage them to build and customize images to suit their individual projects' needs.
+We aim to have CircleCI-extended images with ease of adoption of Docker and CircleCI. Once users are successful, we encourage them to build and customize images to suit their individual projects' needs.
 
 ## Experimental
 
