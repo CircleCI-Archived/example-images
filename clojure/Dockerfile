@@ -9,7 +9,7 @@
 ### please see https://github.com/circleci-public/circleci-dockerfiles
 ### for a complete list of Dockerfiles for each tag/variant of this image
 #
-FROM circleci/clojure:openjdk-11-tools-deps-node
+FROM circleci/clojure:openjdk-14-tools-deps-buster-node
 
 #
 # Install Java 11 LTS / OpenJDK 11
