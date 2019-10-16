@@ -137,10 +137,10 @@ RUN sudo apt-get update && sudo apt-get install -y google-cloud-sdk && \
     gcloud config set core/disable_usage_reporting true && \
     gcloud config set component_manager/disable_update_check true
 
-ARG sdk_version=sdk-tools-linux-3859397.zip
+ARG sdk_version=sdk-tools-linux-4333796.zip
 ARG android_home=/opt/android/sdk
 
-# SHA-256 444e22ce8ca0f67353bda4b85175ed3731cae3ffa695ca18119cbacef1c1bea0
+# SHA-256 92ffee5a1d98d856634e8b71132e8a95d96c83a63fde1099be3d86df3106def9
 
 RUN sudo apt-get update && \
     sudo apt-get install --yes \
@@ -205,3 +205,14 @@ RUN sdkmanager \
 
 # API_LEVEL string gets replaced by m4
 RUN sdkmanager "platforms;android-26"
+
+ARG ndk_version=android-ndk-r20
+ARG android_ndk_home=/opt/android/${ndk_version}
+
+# install NDK
+RUN curl --silent --show-error --location --fail --retry 3 --output /tmp/${ndk_version}.zip https://dl.google.com/android/repository/${ndk_version}-linux-x86_64.zip && \
+    sudo unzip -q /tmp/${ndk_version}.zip -d /opt/android && \
+    rm /tmp/${ndk_version}.zip && \
+    sudo chown -R circleci:circleci ${android_ndk_home}
+
+ENV ANDROID_NDK_HOME ${android_ndk_home}
