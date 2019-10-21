@@ -4,7 +4,12 @@
 ### for a complete list of Dockerfiles for each tag/variant of this image
 ###
 
-FROM circleci/openjdk:14-ea-18-jdk-oraclelinux7
+#
+# this Dockerfile is an example representing one variant of this image;
+### please see https://github.com/circleci-public/circleci-dockerfiles
+### for a complete list of Dockerfiles for each tag/variant of this image
+#
+FROM circleci/openjdk:8u232-jdk-node
 
 #
 # Install Java 11 LTS / OpenJDK 11
