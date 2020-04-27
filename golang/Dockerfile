@@ -4,7 +4,7 @@
 ### for a complete list of Dockerfiles for each tag/variant of this image
 ###
 
-FROM golang:1.13.4
+FROM golang:1.14.2
 
 # make Apt non-interactive
 RUN echo 'APT::Get::Assume-Yes "true";' > /etc/apt/apt.conf.d/90circleci \
@@ -94,7 +94,7 @@ RUN groupadd --gid 3434 circleci \
 # BEGIN IMAGE CUSTOMIZATIONS
 
 RUN curl https://raw.githubusercontent.com/golang/dep/master/install.sh | INSTALL_DIRECTORY=/usr/local/bin sh
-RUN curl -sSL https://github.com/gotestyourself/gotestsum/releases/download/v0.4.0/gotestsum_0.4.0_linux_amd64.tar.gz | \
+RUN curl -sSL https://github.com/gotestyourself/gotestsum/releases/download/v0.4.2/gotestsum_0.4.2_linux_amd64.tar.gz | \
   tar -xz -C /usr/local/bin gotestsum
 
 # END IMAGE CUSTOMIZATIONS
