@@ -204,7 +204,7 @@ RUN sdkmanager \
   "build-tools;29.0.2"
 
 # API_LEVEL string gets replaced by m4
-RUN sdkmanager "platforms;android-28"
+RUN sdkmanager "platforms;android-23"
 
 ARG ndk_version=android-ndk-r20
 ARG android_ndk_home=/opt/android/${ndk_version}
