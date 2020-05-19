@@ -4,7 +4,7 @@
 ### for a complete list of Dockerfiles for each tag/variant of this image
 ###
 
-FROM php:7.4.5-cli-buster
+FROM php:7.4.6-cli-buster
 
 # make Apt non-interactive
 RUN echo 'APT::Get::Assume-Yes "true";' > /etc/apt/apt.conf.d/90circleci \
@@ -72,6 +72,10 @@ RUN set -ex \
   && rm -rf /tmp/docker /tmp/docker.tgz \
   && which docker \
   && (docker version || true)
+
+# Pin Docker API version to avoid
+# "Error response from daemon: client version 1.40 is too new. Maximum supported API version is 1.39" error
+ENV DOCKER_API_VERSION=1.39
 
 # docker compose
 RUN COMPOSE_URL="https://circle-downloads.s3.amazonaws.com/circleci-images/cache/linux-amd64/docker-compose-latest" \
