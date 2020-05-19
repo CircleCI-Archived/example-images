@@ -81,6 +81,10 @@ RUN set -ex \
   && which docker \
   && (docker version || true)
 
+# Pin Docker API version to avoid
+# "Error response from daemon: client version 1.40 is too new. Maximum supported API version is 1.39" error
+ENV DOCKER_API_VERSION=1.39
+
 # docker compose
 RUN COMPOSE_URL="https://circle-downloads.s3.amazonaws.com/circleci-images/cache/linux-amd64/docker-compose-latest" \
   && curl --silent --show-error --location --fail --retry 3 --output /usr/bin/docker-compose $COMPOSE_URL \
@@ -206,4 +210,15 @@ RUN sdkmanager \
   "build-tools;29.0.3"
 
 # API_LEVEL string gets replaced by m4
-RUN sdkmanager "platforms;android-25"
+RUN sdkmanager "platforms;android-27"
+
+ARG ndk_version=android-ndk-r20
+ARG android_ndk_home=/opt/android/${ndk_version}
+
+# install NDK
+RUN wget -O /tmp/${ndk_version}.zip -t 5 "https://dl.google.com/android/repository/${ndk_version}-linux-x86_64.zip" && \
+    sudo unzip -q /tmp/${ndk_version}.zip -d /opt/android && \
+    rm /tmp/${ndk_version}.zip && \
+    sudo chown -R circleci:circleci ${android_ndk_home}
+
+ENV ANDROID_NDK_HOME ${android_ndk_home}
