@@ -4,12 +4,7 @@
 ### for a complete list of Dockerfiles for each tag/variant of this image
 ###
 
-#
-# this Dockerfile is an example representing one variant of this image;
-### please see https://github.com/circleci-public/circleci-dockerfiles
-### for a complete list of Dockerfiles for each tag/variant of this image
-#
-FROM circleci/clojure:openjdk-8-tools-deps-node
+FROM circleci/clojure:openjdk-13-buster
 
 #
 # Install Java 11 LTS / OpenJDK 11
