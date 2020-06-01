@@ -66,7 +66,7 @@ RUN JQ_URL="https://circle-downloads.s3.amazonaws.com/circleci-images/cache/linu
 #>    /usr/local/bin/dockerd
 
 RUN set -ex \
-  && export DOCKER_VERSION=docker-19.03.10.tgz \
+  && export DOCKER_VERSION=docker-19.03.11.tgz \
   && DOCKER_URL="https://download.docker.com/linux/static/stable/x86_64/${DOCKER_VERSION}" \
   && echo Docker URL: $DOCKER_URL \
   && curl --silent --show-error --location --fail --retry 3 --output /tmp/docker.tgz "${DOCKER_URL}" \
@@ -203,14 +203,3 @@ RUN sdkmanager \
 
 # API_LEVEL string gets replaced by m4
 RUN sdkmanager "platforms;android-23"
-
-ARG ndk_version=android-ndk-r20
-ARG android_ndk_home=/opt/android/${ndk_version}
-
-# install NDK
-RUN wget -O /tmp/${ndk_version}.zip -t 5 "https://dl.google.com/android/repository/${ndk_version}-linux-x86_64.zip" && \
-    sudo unzip -q /tmp/${ndk_version}.zip -d /opt/android && \
-    rm /tmp/${ndk_version}.zip && \
-    sudo chown -R circleci:circleci ${android_ndk_home}
-
-ENV ANDROID_NDK_HOME ${android_ndk_home}

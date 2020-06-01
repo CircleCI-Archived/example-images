@@ -9,7 +9,7 @@
 ### please see https://github.com/circleci-public/circleci-dockerfiles
 ### for a complete list of Dockerfiles for each tag/variant of this image
 #
-FROM circleci/openjdk:8u252-jdk-node
+FROM circleci/openjdk:14.0.1-jdk-buster-node
 
 #
 # Install Java 11 LTS / OpenJDK 11
