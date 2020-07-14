@@ -4,6 +4,6 @@
 ### for a complete list of Dockerfiles for each tag/variant of this image
 ###
 
-FROM redis:6.0.4
+FROM redis:6.0.5
 
 CMD ["redis-server", "--appendfsync", "no", "--save", "", "--appendonly", "no"]

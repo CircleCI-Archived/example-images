@@ -186,14 +186,15 @@ RUN sdkmanager \
   "build-tools;25.0.2" \
   "build-tools;25.0.3" \
   "build-tools;26.0.1" \
-  "build-tools;26.0.2" \
+  "build-tools;26.0.2"
+	sdkmanager \
   "build-tools;27.0.0" \
   "build-tools;27.0.1" \
   "build-tools;27.0.2" \
   "build-tools;27.0.3" \
-  # 28.0.0 is failing to download from Google for some reason
-  #"build-tools;28.0.0" \
-  "build-tools;28.0.1" \
+  "build-tools;28.0.0" \
+  "build-tools;28.0.1"
+	sdkmanager \
   "build-tools;28.0.2" \
   "build-tools;28.0.3" \
   "build-tools;29.0.0" \
@@ -203,3 +204,14 @@ RUN sdkmanager \
 
 # API_LEVEL string gets replaced by m4
 RUN sdkmanager "platforms;android-23"
+
+ARG ndk_version=android-ndk-r20
+ARG android_ndk_home=/opt/android/${ndk_version}
+
+# install NDK
+RUN wget -O /tmp/${ndk_version}.zip -t 5 "https://dl.google.com/android/repository/${ndk_version}-linux-x86_64.zip" && \
+    sudo unzip -q /tmp/${ndk_version}.zip -d /opt/android && \
+    rm /tmp/${ndk_version}.zip && \
+    sudo chown -R circleci:circleci ${android_ndk_home}
+
+ENV ANDROID_NDK_HOME ${android_ndk_home}
