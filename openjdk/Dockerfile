@@ -10,19 +10,19 @@
 ### for a complete list of Dockerfiles for each tag/variant of this image
 ###
 
-FROM circleci/openjdk:11.0.7-jdk-buster
+FROM circleci/openjdk:11.0.8-jdk
 
 # Verify the circleci user exists before proceeding
 RUN whoami
 
 # node installations command expect to run as root
 USER root
-## Using node installation from https://raw.githubusercontent.com/nodejs/docker-node/58bfdf5b81f821cf8f219c06c4dcf09eedbc95a2/12/stretch/Dockerfile
+## Using node installation from https://raw.githubusercontent.com/nodejs/docker-node/1f26041ed1cdbe7df00004006c4105e6b960fc3e/12/stretch/Dockerfile
 
 RUN groupadd --gid 1000 node \
   && useradd --uid 1000 --gid node --shell /bin/bash --create-home node
 
-ENV NODE_VERSION 12.17.0
+ENV NODE_VERSION 12.18.2
 
 RUN ARCH= && dpkgArch="$(dpkg --print-architecture)" \
   && case "${dpkgArch##*-}" in \
