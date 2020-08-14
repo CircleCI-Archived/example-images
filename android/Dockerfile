@@ -3,7 +3,7 @@
 ### please see https://github.com/circleci-public/circleci-dockerfiles
 ### for a complete list of Dockerfiles for each tag/variant of this image
 #
-FROM openjdk:8-jdk-slim
+FROM openjdk:11-jdk-slim
 
 LABEL maintainer="marc@circleci.com"
 
@@ -133,7 +133,7 @@ RUN sudo apt-get update && sudo apt-get install -y google-cloud-sdk && \
     gcloud config set core/disable_usage_reporting true && \
     gcloud config set component_manager/disable_update_check true
 
-ARG sdk_version=sdk-tools-linux-4333796.zip
+ARG cmdline_tools=https://dl.google.com/android/repository/commandlinetools-linux-6609375_latest.zip
 ARG android_home=/opt/android/sdk
 
 # SHA-256 92ffee5a1d98d856634e8b71132e8a95d96c83a63fde1099be3d86df3106def9
@@ -158,17 +158,17 @@ RUN sudo apt-get update && \
 ENV PATH ${HOME}/.rubies/ruby-2.6.1/bin:${PATH}
 RUN echo 'gem: --env-shebang --no-rdoc --no-ri' >> ~/.gemrc && gem install bundler
 
-# Download and install Android SDK
-RUN sudo mkdir -p ${android_home} && \
+# Download and install Android Commandline Tools
+RUN sudo mkdir -p ${android_home}/cmdline-tools && \
     sudo chown -R circleci:circleci ${android_home} && \
-    wget -O /tmp/${sdk_version} -t 5 "https://dl.google.com/android/repository/${sdk_version}" && \
-    unzip -q /tmp/${sdk_version} -d ${android_home} && \
-    rm /tmp/${sdk_version}
+    wget -O /tmp/cmdline-tools.zip -t 5 "${cmdline_tools}" && \
+    unzip -q /tmp/cmdline-tools.zip -d ${android_home}/cmdline-tools && \
+    rm /tmp/cmdline-tools.zip
 
 # Set environmental variables
 ENV ANDROID_HOME ${android_home}
 ENV ADB_INSTALL_TIMEOUT 120
-ENV PATH=${ANDROID_HOME}/emulator:${ANDROID_HOME}/tools:${ANDROID_HOME}/tools/bin:${ANDROID_HOME}/platform-tools:${PATH}
+ENV PATH=${ANDROID_HOME}/emulator:${ANDROID_HOME}/cmdline-tools/tools/bin:${ANDROID_HOME}/tools:${ANDROID_HOME}/tools/bin:${ANDROID_HOME}/platform-tools:${PATH}
 
 RUN mkdir ~/.android && echo '### User Sources for Android SDK Manager' > ~/.android/repositories.cfg
 
@@ -181,12 +181,6 @@ RUN sdkmanager \
   "emulator"
 
 RUN sdkmanager \
-  "build-tools;25.0.0" \
-  "build-tools;25.0.1" \
-  "build-tools;25.0.2" \
-  "build-tools;25.0.3" \
-  "build-tools;26.0.1" \
-  "build-tools;26.0.2" \
   "build-tools;27.0.0" \
   "build-tools;27.0.1" \
   "build-tools;27.0.2" \
@@ -200,10 +194,12 @@ RUN sdkmanager \
   "build-tools;29.0.1" \
   "build-tools;29.0.2" \
   "build-tools;29.0.3" \
-  "build-tools;30.0.0"
+  "build-tools;30.0.0" \
+  "build-tools;30.0.1" \
+  "build-tools;30.0.2"
 
 # API_LEVEL string gets replaced by m4
-RUN sdkmanager "platforms;android-24"
+RUN sdkmanager "platforms;android-27"
 ###
 ### this Dockerfile is an example representing one variant of this image;
 ### please see https://github.com/circleci-public/circleci-dockerfiles
@@ -216,12 +212,12 @@ RUN whoami
 
 # node installations command expect to run as root
 USER root
-## Using node installation from https://raw.githubusercontent.com/nodejs/docker-node/1f26041ed1cdbe7df00004006c4105e6b960fc3e/12/stretch/Dockerfile
+## Using node installation from https://raw.githubusercontent.com/nodejs/docker-node/fdd2b251827817ac7bb4f0b2b082483abff8ea77/12/stretch/Dockerfile
 
 RUN groupadd --gid 1000 node \
   && useradd --uid 1000 --gid node --shell /bin/bash --create-home node
 
-ENV NODE_VERSION 12.18.2
+ENV NODE_VERSION 12.18.3
 
 RUN ARCH= && dpkgArch="$(dpkg --print-architecture)" \
   && case "${dpkgArch##*-}" in \
@@ -236,15 +232,13 @@ RUN ARCH= && dpkgArch="$(dpkg --print-architecture)" \
   # gpg keys listed at https://github.com/nodejs/node#release-keys
   && set -ex \
   && for key in \
-    94AE36675C464D64BAFA68DD7434390BDBE9B9C5 \
-    FD3A5288F042B6850C66B31F09FE44734EB7990E \
-    71DCFD284A79C3B38668286BC97EC7A07EDE3FC1 \
-    DD8F2338BAE7501E3DD5AC78C273792F7D83545D \
-    C4F0DFFF4E8C1A8236409D08E73BC641CC11F4C8 \
-    B9AE9905FFD7803F25714661B63B535A4C206CA9 \
-    77984A986EBC2AA786BC0F66B01FBB92821C587A \
-    8FCCA13FEF1D0C2E91008E09770F7A9A5AE15600 \
     4ED778F539E3634C779C87C6D7062848A1AB005C \
+    94AE36675C464D64BAFA68DD7434390BDBE9B9C5 \
+    71DCFD284A79C3B38668286BC97EC7A07EDE3FC1 \
+    8FCCA13FEF1D0C2E91008E09770F7A9A5AE15600 \
+    C4F0DFFF4E8C1A8236409D08E73BC641CC11F4C8 \
+    C82FA3AE1CBEDC6BE46B9360C43CEC45C17AB93C \
+    DD8F2338BAE7501E3DD5AC78C273792F7D83545D \
     A48C2BEE680E841632CD4E44F07496B3EB3C1762 \
     B9E2F5981AA6E0CD28160D9FF13993A75599653C \
   ; do \
