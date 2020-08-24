@@ -10,7 +10,7 @@
 ### for a complete list of Dockerfiles for each tag/variant of this image
 ###
 
-FROM circleci/openjdk:8u265-jdk
+FROM circleci/openjdk:15-jdk-buster
 
 # Verify the circleci user exists before proceeding
 RUN whoami
