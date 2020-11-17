@@ -166,9 +166,11 @@ RUN sudo mkdir -p ${android_home}/cmdline-tools && \
     rm /tmp/cmdline-tools.zip
 
 # Set environmental variables
+# deprecated upstream, should be removed in next-gen image
 ENV ANDROID_HOME ${android_home}
+ENV ANDROID_SDK_ROOT ${android_home}
 ENV ADB_INSTALL_TIMEOUT 120
-ENV PATH=${ANDROID_HOME}/emulator:${ANDROID_HOME}/cmdline-tools/tools/bin:${ANDROID_HOME}/tools:${ANDROID_HOME}/tools/bin:${ANDROID_HOME}/platform-tools:${PATH}
+ENV PATH=${ANDROID_SDK_ROOT}/emulator:${ANDROID_SDK_ROOT}/cmdline-tools/tools/bin:${ANDROID_SDK_ROOT}/tools:${ANDROID_SDK_ROOT}/tools/bin:${ANDROID_SDK_ROOT}/platform-tools:${PATH}
 
 RUN mkdir ~/.android && echo '### User Sources for Android SDK Manager' > ~/.android/repositories.cfg
 
@@ -199,4 +201,15 @@ RUN sdkmanager \
   "build-tools;30.0.2"
 
 # API_LEVEL string gets replaced by m4
-RUN sdkmanager "platforms;android-25"
+RUN sdkmanager "platforms;android-26"
+
+ARG ndk_version=android-ndk-r20
+ARG android_ndk_home=/opt/android/${ndk_version}
+
+# install NDK
+RUN wget -O /tmp/${ndk_version}.zip -t 5 "https://dl.google.com/android/repository/${ndk_version}-linux-x86_64.zip" && \
+    sudo unzip -q /tmp/${ndk_version}.zip -d /opt/android && \
+    rm /tmp/${ndk_version}.zip && \
+    sudo chown -R circleci:circleci ${android_ndk_home}
+
+ENV ANDROID_NDK_HOME ${android_ndk_home}
